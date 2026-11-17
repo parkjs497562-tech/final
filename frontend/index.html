@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bloomy - 맞춤형 영어 학습</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="decor decor-left" aria-hidden="true">
+        <span class="flower flower-lg">🌼</span>
+        <span class="flower flower-sm">🌸</span>
+      </div>
+      <div class="decor decor-right" aria-hidden="true">
+        <span class="bear">🐻</span>
+        <span class="cloud">☁️</span>
+      </div>
+
+      <main class="app-card">
+        <header class="topbar">
+          <div class="brand-wrap">
+            <div class="brand-mark">B</div>
+            <div>
+              <p class="brand-name">Bloomy</p>
+              <p class="brand-subtitle">Little English Coach</p>
+            </div>
+          </div>
+          <span id="stepBadge" class="step-badge">1/2 단계</span>
+        </header>
+
+        <section id="profileScreen" class="screen active-screen">
+          <section class="hero">
+            <div class="hero-text">
+              <p class="eyebrow">반가워요, 부모님!</p>
+              <h1>우리 아이에게 딱 맞는 영어 학습을 시작해볼까요?</h1>
+              <p class="hero-description">
+                Bloomy가 아이의 연령, 학습 경험, 관심사, 시간을 고려해<br />
+                가장 재미있는 학습 루틴을 추천해 드려요.
+              </p>
+            </div>
+            <div class="hero-illustration" aria-hidden="true">
+              <div class="sun">☀️</div>
+              <div class="kid-bubble">🧒</div>
+              <div class="sparkles">
+                <span>✨</span>
+                <span>⭐</span>
+              </div>
+            </div>
+          </section>
+
+          <form id="onboardingForm" novalidate>
+            <section class="form-section">
+              <div class="section-title-row">
+                <h2>1. 아이 나이</h2>
+                <span class="required-dot">필수</span>
+              </div>
+              <div class="choice-grid age-grid" data-group="age">
+                <button type="button" class="choice-btn" data-value="4세">4세</button>
+                <button type="button" class="choice-btn" data-value="5세">5세</button>
+                <button type="button" class="choice-btn" data-value="6세">6세</button>
+                <button type="button" class="choice-btn" data-value="7세">7세</button>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <div class="section-title-row">
+                <h2>2. 영어 학습 경험</h2>
+                <span class="required-dot">필수</span>
+              </div>
+              <div class="choice-grid experience-grid" data-group="experience">
+                <button type="button" class="choice-btn" data-value="처음 시작해요">처음 시작해요</button>
+                <button type="button" class="choice-btn" data-value="가끔 해봤어요">가끔 해봤어요</button>
+                <button type="button" class="choice-btn" data-value="기초를 알고 있어요">기초를 알고 있어요</button>
+                <button type="button" class="choice-btn" data-value="영어를 자주 접해요">영어를 자주 접해요</button>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <div class="section-title-row">
+                <h2>3. 아이 관심사</h2>
+                <span class="required-dot">필수</span>
+              </div>
+              <div class="interest-grid">
+                <label class="interest-item">
+                  <input type="checkbox" value="동물" />
+                  <span>🐻 동물</span>
+                </label>
+                <label class="interest-item">
+                  <input type="checkbox" value="우주" />
+                  <span>🚀 우주</span>
+                </label>
+                <label class="interest-item">
+                  <input type="checkbox" value="공룡" />
+                  <span>🦖 공룡</span>
+                </label>
+                <label class="interest-item">
+                  <input type="checkbox" value="운동" />
+                  <span>⚽ 운동</span>
+                </label>
+                <label class="interest-item">
+                  <input type="checkbox" value="음악" />
+                  <span>🎵 음악</span>
+                </label>
+                <label class="interest-item">
+                  <input type="checkbox" value="미술" />
+                  <span>🎨 미술</span>
+                </label>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <div class="section-title-row">
+                <h2>4. 하루 학습 시간</h2>
+                <span class="required-dot">필수</span>
+              </div>
+              <div class="choice-grid time-grid" data-group="studyTime">
+                <button type="button" class="choice-btn" data-value="10분">10분</button>
+                <button type="button" class="choice-btn" data-value="15분">15분</button>
+                <button type="button" class="choice-btn" data-value="20분">20분</button>
+              </div>
+            </section>
+
+            <div id="formMessage" class="form-message" role="alert" aria-live="polite"></div>
+
+            <button type="submit" class="submit-btn">Bloomy 시작하기</button>
+          </form>
+        </section>
+
+        <section id="diagnosisScreen" class="screen hidden-screen" aria-live="polite">
+          <div class="diagnosis-header">
+            <div>
+              <p class="eyebrow">초기 진단</p>
+              <h2>우리 아이의 영어 학습 시작점을 알아봐요</h2>
+            </div>
+            <span class="progress-pill">2/2 단계</span>
+          </div>
+
+          <div id="diagnosisMessage" class="form-message diagnosis-message" role="alert" aria-live="polite"></div>
+
+          <div class="diagnosis-questions">
+            <article class="question-card" data-question="q1">
+              <h3>1. 아이가 영어 알파벳을 어느 정도 알고 있나요?</h3>
+              <div class="answer-list">
+                <button type="button" class="answer-btn" data-question="q1" data-value="알파벳을 거의 몰라요.">알파벳을 거의 몰라요.</button>
+                <button type="button" class="answer-btn" data-question="q1" data-value="일부 알파벳을 알아요.">일부 알파벳을 알아요.</button>
+                <button type="button" class="answer-btn" data-question="q1" data-value="대문자와 소문자를 대부분 알아요.">대문자와 소문자를 대부분 알아요.</button>
+                <button type="button" class="answer-btn" data-question="q1" data-value="알파벳을 읽고 말할 수 있어요.">알파벳을 읽고 말할 수 있어요.</button>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="q2">
+              <h3>2. 파닉스(알파벳 소리)를 접해본 적이 있나요?</h3>
+              <div class="answer-list">
+                <button type="button" class="answer-btn" data-question="q2" data-value="아직 접해본 적 없어요.">아직 접해본 적 없어요.</button>
+                <button type="button" class="answer-btn" data-question="q2" data-value="노래나 영상으로 들어봤어요.">노래나 영상으로 들어봤어요.</button>
+                <button type="button" class="answer-btn" data-question="q2" data-value="알파벳 소리를 조금 알아요.">알파벳 소리를 조금 알아요.</button>
+                <button type="button" class="answer-btn" data-question="q2" data-value="간단한 단어의 소리를 읽어본 적 있어요.">간단한 단어의 소리를 읽어본 적 있어요.</button>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="q3">
+              <h3>3. 영어 그림책이나 리더스를 읽어본 경험이 있나요?</h3>
+              <div class="answer-list">
+                <button type="button" class="answer-btn" data-question="q3" data-value="거의 없어요.">거의 없어요.</button>
+                <button type="button" class="answer-btn" data-question="q3" data-value="그림 위주로 함께 본 적 있어요.">그림 위주로 함께 본 적 있어요.</button>
+                <button type="button" class="answer-btn" data-question="q3" data-value="영어 단어가 있는 책을 함께 읽어요.">영어 단어가 있는 책을 함께 읽어요.</button>
+                <button type="button" class="answer-btn" data-question="q3" data-value="간단한 영어 문장을 읽어본 적 있어요.">간단한 영어 문장을 읽어본 적 있어요.</button>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="q4">
+              <h3>4. 영어로 간단한 질문을 하면 아이가 어떻게 반응하나요?</h3>
+              <div class="answer-list">
+                <button type="button" class="answer-btn" data-question="q4" data-value="거의 반응하지 않아요.">거의 반응하지 않아요.</button>
+                <button type="button" class="answer-btn" data-question="q4" data-value="표정이나 행동으로 반응해요.">표정이나 행동으로 반응해요.</button>
+                <button type="button" class="answer-btn" data-question="q4" data-value="한국어로 대답해요.">한국어로 대답해요.</button>
+                <button type="button" class="answer-btn" data-question="q4" data-value="영어 단어나 짧은 문장으로 대답해요.">영어 단어나 짧은 문장으로 대답해요.</button>
+              </div>
+            </article>
+
+            <article class="question-card" data-question="q5">
+              <h3>5. 아이가 익숙한 영어 단어나 표현을 얼마나 이해하나요?</h3>
+              <div class="answer-list">
+                <button type="button" class="answer-btn" data-question="q5" data-value="아는 표현이 거의 없어요.">아는 표현이 거의 없어요.</button>
+                <button type="button" class="answer-btn" data-question="q5" data-value="인사나 간단한 단어를 알아들어요.">인사나 간단한 단어를 알아들어요.</button>
+                <button type="button" class="answer-btn" data-question="q5" data-value="익숙한 단어와 짧은 표현을 이해해요.">익숙한 단어와 짧은 표현을 이해해요.</button>
+                <button type="button" class="answer-btn" data-question="q5" data-value="간단한 영어 지시나 문장을 이해해요.">간단한 영어 지시나 문장을 이해해요.</button>
+              </div>
+            </article>
+          </div>
+
+          <div class="step-actions">
+            <button type="button" id="backToProfileBtn" class="secondary-btn">이전 단계</button>
+            <button type="button" id="nextDiagnosisBtn" class="submit-btn small-btn" disabled>결과 확인하기</button>
+          </div>
+        </section>
+
+        <aside id="resultSummary" class="summary-card hidden" aria-live="polite">
+          <div class="summary-header">
+            <span class="summary-icon">🌟</span>
+            <h3>초기 학습 단계 가설</h3>
+          </div>
+          <p class="summary-note">2주간의 실제 학습 반응을 통해 조정됩니다.</p>
+          <ul id="summaryList" class="summary-list"></ul>
+          <div class="summary-actions">
+            <button type="button" id="showCurriculumBtn" class="submit-btn small-btn">맞춤 커리큘럼 확인하기</button>
+          </div>
+        </aside>
+
+        <section id="curriculumScreen" class="screen hidden-screen">
+          <div class="curriculum-header">
+            <div>
+              <p class="eyebrow">예시 커리큘럼</p>
+              <h2>우리 아이 맞춤 영어 학습 플랜</h2>
+            </div>
+            <span class="progress-pill">4주 플랜</span>
+          </div>
+
+          <div class="curriculum-note-box">
+            <p>
+              이 커리큘럼은 현재 입력한 아이 정보와 진단 답변을 바탕으로 구성한
+              프론트엔드 예시 화면입니다. AI가 실제로 생성한 결과가 아니라, 이후 백엔드와 연결할 수 있는 구조로 준비한 예시입니다.
+            </p>
+          </div>
+
+          <div id="curriculumProfile" class="profile-summary-grid"></div>
+
+          <div id="curriculumList" class="curriculum-list"></div>
+
+          <div class="step-actions">
+            <button type="button" id="backToDiagnosisBtn" class="secondary-btn">이전으로</button>
+            <button type="button" id="goTodayLearningBtn" class="submit-btn small-btn">오늘의 학습 시작하기</button>
+          </div>
+        </section>
+
+        <section id="todayLearningScreen" class="screen hidden-screen">
+          <div class="curriculum-header">
+            <div>
+              <p class="eyebrow">오늘의 학습</p>
+              <h2>오늘의 Bloomy 미니 러닝</h2>
+            </div>
+            <span class="progress-pill">맞춤형 예시</span>
+          </div>
+
+          <div class="learning-top-box">
+            <div class="mini-rocket">🚀</div>
+            <div>
+              <p class="learning-subtitle">오늘의 추천 루틴</p>
+              <p id="todayLearningSummary" class="learning-summary">우주를 좋아하는 아이를 위한 영어 학습 시간입니다.</p>
+            </div>
+          </div>
+
+          <div class="learning-step">
+            <div class="learning-step-header">
+              <span class="step-number">STEP 1</span>
+              <h3>오늘의 영어 단어</h3>
+            </div>
+            <div id="wordCardList" class="word-card-list"></div>
+          </div>
+
+          <div class="learning-step">
+            <div class="learning-step-header">
+              <span class="step-number">STEP 2</span>
+              <h3>영어 표현 따라 하기</h3>
+            </div>
+            <div id="phraseList" class="phrase-list"></div>
+          </div>
+
+          <div class="learning-step">
+            <div class="learning-step-header">
+              <span class="step-number">STEP 3</span>
+              <h3>그림 퀴즈</h3>
+            </div>
+            <div id="quizList" class="quiz-list"></div>
+            <div class="quiz-actions">
+              <button type="button" id="checkQuizBtn" class="submit-btn small-btn">퀴즈 확인하기</button>
+            </div>
+            <div id="quizFeedback" class="quiz-feedback" aria-live="polite"></div>
+          </div>
+
+          <div id="completionStep" class="learning-step completion-step hidden">
+            <div class="learning-step-header">
+              <span class="step-number">STEP 4</span>
+              <h3>오늘의 학습 완료</h3>
+            </div>
+            <div class="completion-card">
+              <div class="star-display">⭐ <span id="finalStarCount">0</span></div>
+              <p class="completion-title">오늘의 학습을 잘 마쳤어요!</p>
+              <p id="completionSummary" class="completion-summary">오늘 배운 단어와 표현을 다시 한 번 따라 해 보세요.</p>
+              <ul id="completionList" class="completion-list"></ul>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button type="button" id="backToCurriculumBtn" class="secondary-btn">커리큘럼으로</button>
+            <button type="button" id="retryLearningBtn" class="submit-btn small-btn">다시 학습하기</button>
+            <button type="button" id="returnHomeBtn" class="secondary-btn">처음 화면으로</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./js/app.js"></script>
+  </body>
+</html>
