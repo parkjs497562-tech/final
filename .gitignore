@@ -6,6 +6,11 @@ __pycache__/
 # Bloomy 데이터
 backend/*.db
 backend/.smoke_test.db
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
 .venv/
 *.egg-info/
 
@@ -14,3 +19,5 @@ backend/.smoke_test.db
 
 # 환경
 .env
+.env.*
+!.env.example

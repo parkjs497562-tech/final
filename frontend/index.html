@@ -233,6 +233,7 @@
 
           <div class="step-actions">
             <button type="button" id="backToDiagnosisBtn" class="secondary-btn">이전으로</button>
+            <button type="button" id="curriculumParentDashboardBtn" class="secondary-btn">부모님 리포트</button>
             <button type="button" id="goTodayLearningBtn" class="submit-btn small-btn">오늘의 학습 시작하기</button>
           </div>
         </section>
@@ -246,12 +247,36 @@
             <span class="progress-pill">맞춤형 예시</span>
           </div>
 
-          <div class="learning-top-box">
-            <div class="mini-rocket">🚀</div>
-            <div>
-              <p class="learning-subtitle">오늘의 추천 루틴</p>
-              <p id="todayLearningSummary" class="learning-summary">우주를 좋아하는 아이를 위한 영어 학습 시간입니다.</p>
+          <div class="learning-progress-wrap" aria-live="polite">
+            <div class="learning-progress-label"><span id="learningProgressLabel">학습 홈</span><span id="learningStarCount">⭐ 0</span></div>
+            <div class="learning-progress-track"><span id="learningProgressBar"></span></div>
+          </div>
+
+          <div class="learning-step learning-home-page">
+            <div class="learning-home-rocket" aria-hidden="true">🚀</div>
+            <p class="eyebrow">오늘의 미션</p>
+            <h3>별을 모으러 출발해 볼까요?</h3>
+            <p id="todayLearningSummary" class="learning-summary">관심사에 맞춘 오늘의 영어 학습을 준비했어요.</p>
+            <p id="learningStorageMessage" class="storage-message hidden" role="status"></p>
+            <div class="home-mission-list"><span>📚 단어 3개</span><span>💬 표현 2개</span><span>🧩 퀴즈 3개</span></div>
+            <div class="home-stats-grid" aria-live="polite">
+              <div class="home-stat-card"><span>오늘 진행</span><strong id="todayProgressValue">0%</strong></div>
+              <div class="home-stat-card"><span>오늘 상태</span><strong id="todayStatusValue">학습 전</strong></div>
+              <div class="home-stat-card"><span>이번 주</span><strong id="weeklyDaysValue">0일</strong></div>
+              <div class="home-stat-card"><span>연속 학습</span><strong id="streakValue">0일</strong></div>
+              <div class="home-stat-card"><span>배운 단어</span><strong id="totalWordsValue">0개</strong></div>
+              <div class="home-stat-card"><span>배운 표현</span><strong id="totalPhrasesValue">0개</strong></div>
+              <div class="home-stat-card"><span>최근 정답률</span><strong id="recentAccuracyValue">데이터 없음</strong></div>
             </div>
+            <section class="recommendation-card" aria-live="polite">
+              <div class="recommendation-title-row"><div><p class="eyebrow">오늘의 맞춤 추천</p><h4 id="recommendationTitle">추천을 준비하고 있어요</h4></div><span id="recommendationLevel" class="level-badge">진단 기반</span></div>
+              <p id="recommendationReason" class="recommendation-reason"></p>
+              <div class="recommendation-details"><p><strong>추천 단어</strong><span id="recommendedWords">데이터 없음</span></p><p><strong>추천 표현</strong><span id="recommendedPhrases">데이터 없음</span></p><p><strong>예상 시간</strong><span id="recommendedTime">데이터 없음</span></p><p><strong>학습 개선점</strong><span id="recommendedImprovement">이전 기록이 아직 없어요.</span></p></div>
+              <p id="recommendationSource" class="recommendation-source">브라우저 학습 기록 기반 규칙 추천 · AI 코치 계정 연결 후 분석할 수 있어요.</p>
+              <div class="ai-recommendation-controls"><p id="aiRecommendationStatus" class="ai-status" role="status">부모님 대시보드에서 계정을 연결하면 AI 코치 분석을 사용할 수 있어요.</p><button type="button" id="refreshAiRecommendationBtn" class="secondary-btn">AI 코치 분석 다시 받기 ✨</button></div>
+            </section>
+            <button type="button" id="startLearningPagesBtn" class="submit-btn learning-primary-btn">학습 시작하기 🌟</button>
+            <button type="button" id="parentDashboardBtn" class="secondary-btn dashboard-entry-btn">부모님 학습 대시보드 📊</button>
           </div>
 
           <div class="learning-step">
@@ -260,6 +285,7 @@
               <h3>오늘의 영어 단어</h3>
             </div>
             <div id="wordCardList" class="word-card-list"></div>
+            <div class="learning-nav"><button type="button" id="wordBackBtn" class="secondary-btn">학습 홈</button><button type="button" id="wordNextBtn" class="submit-btn small-btn">다음: 표현 배우기</button></div>
           </div>
 
           <div class="learning-step">
@@ -268,6 +294,7 @@
               <h3>영어 표현 따라 하기</h3>
             </div>
             <div id="phraseList" class="phrase-list"></div>
+            <div class="learning-nav"><button type="button" id="phraseBackBtn" class="secondary-btn">이전: 단어</button><button type="button" id="phraseNextBtn" class="submit-btn small-btn">다음: 그림 퀴즈</button></div>
           </div>
 
           <div class="learning-step">
@@ -275,11 +302,13 @@
               <span class="step-number">STEP 3</span>
               <h3>그림 퀴즈</h3>
             </div>
+            <p id="quizQuestionCount" class="quiz-question-count" aria-live="polite"></p>
             <div id="quizList" class="quiz-list"></div>
             <div class="quiz-actions">
-              <button type="button" id="checkQuizBtn" class="submit-btn small-btn">퀴즈 확인하기</button>
+              <button type="button" id="checkQuizBtn" class="submit-btn small-btn">다음 문제</button>
             </div>
             <div id="quizFeedback" class="quiz-feedback" aria-live="polite"></div>
+            <div class="learning-nav"><button type="button" id="quizBackBtn" class="secondary-btn">이전: 표현</button></div>
           </div>
 
           <div id="completionStep" class="learning-step completion-step hidden">
@@ -291,19 +320,48 @@
               <div class="star-display">⭐ <span id="finalStarCount">0</span></div>
               <p class="completion-title">오늘의 학습을 잘 마쳤어요!</p>
               <p id="completionSummary" class="completion-summary">오늘 배운 단어와 표현을 다시 한 번 따라 해 보세요.</p>
-              <ul id="completionList" class="completion-list"></ul>
+              <h4>오늘 배운 단어</h4><ul id="completionList" class="completion-list"></ul>
+              <h4>오늘 배운 표현</h4><ul id="completionPhraseList" class="completion-list"></ul>
+              <div class="learning-nav"><button type="button" id="completionBackBtn" class="secondary-btn">퀴즈 다시 보기</button><button type="button" id="completionHomeBtn" class="submit-btn small-btn">홈으로 돌아가기</button></div>
             </div>
           </div>
 
           <div class="step-actions">
-            <button type="button" id="backToCurriculumBtn" class="secondary-btn">커리큘럼으로</button>
-            <button type="button" id="retryLearningBtn" class="submit-btn small-btn">다시 학습하기</button>
-            <button type="button" id="returnHomeBtn" class="secondary-btn">처음 화면으로</button>
+            <button type="button" id="learningHomeBtn" class="secondary-btn">학습 홈</button>
           </div>
+          <p class="image-attribution">All emojis designed by <a href="https://openmoji.org" target="_blank" rel="noreferrer">OpenMoji</a> – the open-source emoji and icon project. License: <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a></p>
+        </section>
+
+        <section id="parentDashboardScreen" class="screen hidden-screen" aria-live="polite">
+          <div class="curriculum-header dashboard-header">
+            <div><p class="eyebrow">보호자 전용</p><h2>우리 아이 학습 리포트</h2><p id="dashboardProfileLine" class="dashboard-profile-line"></p></div>
+            <span class="progress-pill">실제 저장 기록</span>
+          </div>
+          <p id="dashboardStorageMessage" class="storage-message hidden" role="status"></p>
+          <section class="dashboard-section"><h3>전체 학습 현황</h3><div id="dashboardSummaryCards" class="dashboard-summary-grid"></div></section>
+          <section class="dashboard-section"><div class="dashboard-section-heading"><h3>이번 주 학습</h3><p id="weeklySummaryText">이번 주 기록을 모으고 있어요.</p></div><div id="weeklyChart" class="weekly-chart" aria-label="요일별 학습 시간"></div></section>
+          <section class="dashboard-section dashboard-columns">
+            <article class="dashboard-panel"><h3>단어 성취도</h3><div id="wordAchievementList" class="achievement-list"></div></article>
+            <article class="dashboard-panel"><h3>복습하면 좋은 단어</h3><div id="weakWordList" class="weak-word-list"></div></article>
+          </section>
+          <section class="dashboard-section ai-connection-panel">
+            <div><p class="eyebrow">보호자 계정</p><h3>AI 코치 연결</h3><p>계정은 AI 요청 인증에만 사용해요. 아이 이름은 AI 분석 요청에 포함하지 않습니다.</p></div>
+            <p id="aiAuthStatus" class="ai-status" role="status">로그인하면 서버 AI 코치 분석을 사용할 수 있어요.</p>
+            <form id="aiAuthForm" class="ai-auth-form">
+              <label>이메일<input id="aiAuthEmail" name="email" type="email" autocomplete="email" required maxlength="254"></label>
+              <label>비밀번호<input id="aiAuthPassword" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="128"></label>
+              <div class="ai-auth-actions"><button type="submit" id="aiAuthSubmitBtn" class="submit-btn small-btn">로그인</button><button type="button" id="aiAuthModeBtn" class="secondary-btn">계정 만들기</button></div>
+            </form>
+            <button type="button" id="aiAuthDisconnectBtn" class="secondary-btn hidden">연결 해제</button>
+          </section>
+          <section class="dashboard-section recommendation-card"><div class="recommendation-title-row"><div><p class="eyebrow">학습 분석</p><h3 id="dashboardAnalysisTitle">기록을 분석하고 있어요</h3></div><span id="dashboardRecommendationLevel" class="level-badge">진단 기반</span></div><p id="dashboardAnalysisText" class="recommendation-reason"></p><div class="ai-analysis-grid"><article><strong>잘하고 있는 점</strong><p id="aiStrengthsText">기록이 부족해 아직 분석할 수 없어요.</p></article><article><strong>함께 연습할 점</strong><p id="aiSupportNeedsText">기록이 부족해 아직 분석할 수 없어요.</p></article><article><strong>다음 학습</strong><p id="aiNextLearningText">관심사 기반 규칙 추천을 준비했어요.</p></article></div><div id="dashboardFeedback" class="parent-feedback-grid"></div><p id="dashboardAiSource" class="recommendation-source">브라우저 학습 기록 기반 규칙 분석 · AI 코치 미연결</p><button type="button" id="dashboardAiRefreshBtn" class="secondary-btn">AI 분석 다시 받기 ✨</button></section>
+          <div class="step-actions dashboard-actions"><button type="button" id="dashboardBackBtn" class="secondary-btn">이전 화면으로</button><button type="button" id="dashboardRefreshBtn" class="submit-btn small-btn">기록 새로고침</button></div>
         </section>
       </main>
     </div>
 
+    <script src="./js/learning-data.js"></script>
+    <script src="./js/recommendation.js"></script>
     <script src="./js/app.js"></script>
   </body>
 </html>

@@ -379,6 +379,22 @@ def ep_stats(child):
     return 200, coach.stats_payload(child), JSON
 
 
+def ep_learning_recommendation(headers, body):
+    """학습 화면의 익명 요약만 받는 계정 인증 추천 API."""
+    account = _account_from(headers)
+    if not account:
+        return 401, {"error": "로그인이 필요합니다"}, JSON
+    try:
+        result = coach.learning_recommendation(body)
+    except ValueError as exc:
+        return 400, {"error": str(exc)}, JSON
+    if not coach._llm_available():
+        return 503, {"error": "AI 코치가 설정되지 않았습니다"}, JSON
+    if not result:
+        return 502, {"error": "AI 응답을 확인하지 못했습니다"}, JSON
+    return 200, result, JSON
+
+
 def ep_feedback(headers, child, body):
     """1분 피드백 (5.3) → 3단계 코치 (6.3) → 조정·메시지.
 
@@ -631,6 +647,8 @@ def dispatch(method, path, headers, body):
                     return ep_settings(child, body)
             if p == "/api/notifications/read":
                 return ep_notifications_read(headers)
+            if p == "/api/learning/recommendation":
+                return ep_learning_recommendation(headers, body)
             if p == "/api/cron":
                 return ep_cron(headers, body)
             return 404, {"error": "경로가 없습니다"}, JSON
@@ -691,3 +709,7 @@ def main():
     httpd = ThreadingHTTPServer((args.host, args.port), Handler)
     print("🌷 꽃피다(Bloomy) 서버 시작: http://%s:%d" % (args.host, args.port))
     httpd.serve_forever()
+
+
+if __name__ == "__main__":
+    main()

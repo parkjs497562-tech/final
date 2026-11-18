@@ -27,6 +27,7 @@ if os.path.exists(TEST_DB):
     os.remove(TEST_DB)
 
 import catalog  # noqa: E402
+import coach  # noqa: E402
 import main as bloomy_main  # noqa: E402
 import scheduler  # noqa: E402
 import store  # noqa: E402
@@ -70,9 +71,9 @@ def main():
     today = dt.date.today()
     suffix = dt.datetime.now().strftime("%H%M%S")
 
-    # 과거 계획 앵커: 최근 월요일(<= 오늘-3). d0..d4 = 월~금 모두 과거,
+    # 과거 계획 앵커: 최근 월요일(<= 오늘-7). d0..d4 = 월~금 모두 과거,
     # d5 = 그 다음 주 월요일(계획 내, 피드백 없음) — 요일에 무관하게 결정적.
-    base = today - dt.timedelta(days=3)
+    base = today - dt.timedelta(days=7)
     m = base - dt.timedelta(days=base.weekday())
     d0, d1, d2, d3, d4 = (m + dt.timedelta(days=i) for i in range(5))
     d5 = d4 + dt.timedelta(days=3)  # 금 → 다음 월
@@ -81,10 +82,10 @@ def main():
     st, d = req("GET", "/api/health")
     check("health", st == 200 and d.get("ok") is True, str(d))
     st, d = req("GET", "/")
-    check("frontend /", st == 200 and "꽃피다" in d, "status=%s" % st)
-    st, d = req("GET", "/style.css")
-    check("frontend /style.css", st == 200 and "--teal" in d, "status=%s" % st)
-    st, d = req("GET", "/app.js")
+    check("frontend /", st == 200 and "<title>Bloomy" in d, "status=%s" % st)
+    st, d = req("GET", "/css/style.css")
+    check("frontend /css/style.css", st == 200 and "--bg-cream" in d, "status=%s" % st)
+    st, d = req("GET", "/js/app.js")
     check("frontend /app.js", st == 200 and "Bloomy" in d, "status=%s" % st)
 
     # 2. 회원가입 / 로그인
@@ -107,6 +108,85 @@ def main():
     check("me", st == 200 and d["account"]["email"] == email1, str(d)[:200])
     st, d = req("GET", "/api/me")
     check("me without token -> 401", st == 401)
+
+    # 2.1 authenticated, privacy-filtered learning AI recommendation endpoint
+    ai_payload = {
+        "profile": {"age": 5, "experience": "가끔 해봤어요", "interests": ["우주"], "studyTime": 10},
+        "diagnosis": {
+            "q1": "일부 알파벳을 알아요.",
+            "q2": "아직 접해본 적 없어요.",
+            "q3": "거의 없어요.",
+            "q4": "거의 반응하지 않아요.",
+            "q5": "아는 표현이 거의 없어요.",
+        },
+        "stats": {"recentAttemptCount": 3, "recentAccuracy": 2 / 3,
+                  "previousTrend": 10, "weakWords": ["Star"],
+                  "words": [{"word": "Star", "accuracy": 0.5, "correct": 1, "wrong": 1}],
+                  "completionRate": 0.5},
+        "words": [{"word": "Star", "meaning": "별", "image": "star.svg", "emoji": "⭐"}],
+        "phrases": [{"english": "Hello, Star!", "korean": "안녕, 별아!"}],
+        "child_name_must_not_be_sent": "가상 개인정보",
+    }
+    st, d = req("POST", "/api/learning/recommendation", body=ai_payload)
+    check("learning AI requires account auth", st == 401, str(d))
+    st, d = req("POST", "/api/learning/recommendation", token=token1,
+                body={"profile": {"age": 99}})
+    check("learning AI validates profile before key check", st == 400, str(d))
+    st, d = req("POST", "/api/learning/recommendation", token=token1,
+                body=ai_payload)
+    check("learning AI missing key returns fallback signal", st == 503, str(d))
+
+    old_llm_call = coach._call_llm
+    llm_prompts = []
+    def mocked_llm(system, user, timeout=40):
+        llm_prompts.append(user)
+        prompt = json.loads(user)
+        return json.dumps({
+            "summary": "관심사 단어를 잘 골랐어요.",
+            "strengths": ["그림을 보고 단어를 찾았어요."],
+            "supportNeeds": ["Star 소리를 한 번 더 들어봐요."],
+            "nextLearning": "우주 단어를 그림으로 복습해요.",
+            "recommendedWords": [prompt["candidateWords"][0]["word"]],
+            "recommendedPhrases": [prompt["candidatePhrases"][0]["english"]],
+            "difficulty": "기초",
+            "estimatedMinutes": 8,
+            "reason": "우주 관심사와 현재 학습 이력을 반영했어요.",
+        }, ensure_ascii=False)
+    coach._call_llm = mocked_llm
+    os.environ["OPENAI_API_KEY"] = "test-only-mock-key"
+    st, d = req("POST", "/api/learning/recommendation", token=token1,
+                body=ai_payload)
+    check("learning AI mocked response validated", st == 200
+          and d.get("provider") == "server_ai"
+          and d.get("words", [{}])[0].get("word") == "Star", str(d)[:200])
+    check("learning AI prompt excludes child identifier", bool(llm_prompts)
+          and "가상 개인정보" not in llm_prompts[-1], "identifier found in prompt")
+    art_payload = json.loads(json.dumps(ai_payload, ensure_ascii=False))
+    art_payload["profile"]["interests"] = ["미술"]
+    art_payload["words"] = [
+        {"word": "Paint", "meaning": "물감"},
+        {"word": "Color", "meaning": "색칠하다"},
+        {"word": "Smile", "meaning": "웃다"},
+    ]
+    art_payload["phrases"] = [
+        {"english": "Let's draw!", "korean": "함께 그려 보자!"},
+        {"english": "I like colors!", "korean": "나는 여러 색을 좋아해!"},
+    ]
+    st, d = req("POST", "/api/learning/recommendation", token=token1,
+                body=art_payload)
+    check("learning AI accepts added interest-specific phrases", st == 200
+          and d.get("phrases", [{}])[0].get("english") == "Let's draw!", str(d)[:200])
+    coach._call_llm = lambda system, user, timeout=40: json.dumps({
+        "summary": "잘했어요", "strengths": [], "supportNeeds": [],
+        "nextLearning": "복습해요", "recommendedWords": ["Not a candidate"],
+        "recommendedPhrases": ["Hello, Star!"], "difficulty": "기초",
+        "estimatedMinutes": 8, "reason": "후보 검증",
+    }, ensure_ascii=False)
+    st, d = req("POST", "/api/learning/recommendation", token=token1,
+                body=ai_payload)
+    check("learning AI rejects unlisted recommendations", st == 502, str(d))
+    coach._call_llm = old_llm_call
+    os.environ.pop("OPENAI_API_KEY", None)
 
     # 3. 진단 5문항 정의 (F 온보딩 UI용)
     st, d = req("GET", "/api/diagnosis/questions")
